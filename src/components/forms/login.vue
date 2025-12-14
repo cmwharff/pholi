@@ -53,36 +53,37 @@ const handleLogin = async () => {
             </CardHeader>
             <CardContent>
                 <form @submit.prevent="handleLogin">
-                    <div className="flex flex-col gap-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                    <div class="flex flex-col gap-6">
+                        <!-- Email -->
+                        <div class="grid gap-2">
+                            <Label for="email">Email</Label>
                             <Input id="email" type="email" placeholder="m@example.com" required v-model="email" />
                         </div>
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label htmlFor="password">Password</Label>
+
+                        <!-- Password -->
+                        <div class="grid gap-2">
+                            <div class="flex items-center">
+                                <Label for="password">Password</Label>
                                 <RouterLink to="/forgot-password"
                                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
                                     Forgot your password?
                                 </RouterLink>
                             </div>
-                            <div class="grid gap-2">
-                                <div class="flex items-center">
-                                    <Label for="password">Password</Label>
-                                </div>
-                                <Input id="password" type="password" required v-model="password" />
-                            </div>
-                            <div class="grid gap-2">
-                                <div class="flex items-center">
-                                    <Label for="repeat-password">Repeat Password</Label>
-                                </div>
-                                <Input id="repeat-password" type="password" required v-model="repeatPassword" />
-                            </div>
+                            <Input id="password" type="password" required v-model="password" />
                         </div>
+
+                        <!-- Error -->
                         <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
+
+                        <!-- Submit -->
                         <Button type="submit" class="w-full" :disabled="isLoading">
-                            {{ isLoading ? "Creating an account..." : "Sign up" }}
+                            {{ isLoading ? "Logging in..." : "Log In" }}
                         </Button>
+                    </div>
+
+                    <div class="mt-4 text-center text-sm">
+                        New to Pholi?
+                        <RouterLink to="/sign-up" class="underline underline-offset-4">Sign Up</RouterLink>
                     </div>
                 </form>
             </CardContent>

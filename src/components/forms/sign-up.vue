@@ -60,7 +60,7 @@ const handleSignUp = async () => {
 
         <Card v-else>
             <CardHeader>
-                <CardTitle class="text-2xl">Sign up</CardTitle>
+                <CardTitle className="text-2xl">Sign up</CardTitle>
                 <CardDescription>Create a new account</CardDescription>
             </CardHeader>
             <CardContent>
@@ -99,7 +99,7 @@ const handleSignUp = async () => {
 
                     <div class="mt-4 text-center text-sm">
                         Already have an account?
-                        <a href="/login" class="underline underline-offset-4">Login</a>
+                        <RouterLink to="/" class="underline underline-offset-4">Login</RouterLink>
                     </div>
                 </form>
             </CardContent>

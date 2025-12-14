@@ -24,9 +24,11 @@ const handleForgotPassword = async (e: Event) => {
     error.value = null
 
     try {
-        const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email.value, {
-            redirectTo: "http://localhost:3000/update-password",
-        })
+        const { error: supabaseError } =
+            await supabase.auth.resetPasswordForEmail(email.value, {
+                redirectTo: `${window.location.origin}/update-password`
+            })
+
         if (supabaseError) throw supabaseError
         success.value = true
     } catch (err: unknown) {

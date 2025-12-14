@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { ref } from "vue"
 import { supabase } from "@/lib/supabaseClient"
 import { Button } from "@/components/ui/button"
@@ -11,10 +12,19 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import router from '@/router'
 
 const password = ref("")
 const error = ref<string | null>(null)
 const isLoading = ref(false)
+
+onMounted(async () => {
+  const {
+    data: { session }
+  } = await supabase.auth.getSession()
+
+})
+
 
 const handleUpdatePassword = async () => {
     isLoading.value = true
