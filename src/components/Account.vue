@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import { supabase } from '../lib/supabaseClient'
     import { onMounted, ref, toRefs } from 'vue'
     import Avatar from './Avatar.vue'
@@ -16,6 +16,7 @@
     })
     
     async function getProfile() {
+        if (session) {
         try {
             loading.value = true
             const { user } = session.value
@@ -34,13 +35,17 @@
                 avatar_url.value = data.avatar_url
             }
         } catch (error) {
+        if (error instanceof Error) {
             alert(error.message)
+        }
         } finally {
             loading.value = false
         }
     }
+    }
     
     async function updateProfile() {
+        if (session) {
         try {
             loading.value = true
             const { user } = session.value
@@ -57,10 +62,13 @@
     
             if (error) throw error
         } catch (error) {
+        if (error instanceof Error) {
             alert(error.message)
+        }
         } finally {
             loading.value = false
         }
+    }
     }
     
     async function signOut() {
@@ -69,7 +77,9 @@
             const { error } = await supabase.auth.signOut()
             if (error) throw error
         } catch (error) {
+        if (error instanceof Error) {
             alert(error.message)
+        }
         } finally {
             loading.value = false
         }
