@@ -2,7 +2,6 @@
 import { supabase } from '../lib/supabaseClient'
 import { onMounted, ref } from 'vue'
 import type { Session } from '@supabase/supabase-js'
-import Avatar from './Avatar.vue'
 import router from '../router'
 
 const session = ref<Session | null>(null)
@@ -10,6 +9,7 @@ const avatar_url = ref('')
 const loading = ref(true)
 const username = ref('')
 const website = ref('')
+const full_name = ref('')
 
 onMounted(async () => {
     const {
@@ -34,7 +34,7 @@ async function getProfile() {
 
         const { data, error, status } = await supabase
             .from('profiles')
-            .select('username, website, avatar_url')
+            .select('username, website, avatar_url, full_name')
             .eq('id', user.id)
             .single()
 
@@ -44,6 +44,7 @@ async function getProfile() {
             username.value = data.username ?? ''
             website.value = data.website ?? ''
             avatar_url.value = data.avatar_url ?? ''
+            full_name.value = data.full_name ?? ''
         }
     } catch (error) {
         if (error instanceof Error) alert(error.message)
@@ -64,6 +65,7 @@ async function updateProfile() {
             username: username.value,
             website: website.value,
             avatar_url: avatar_url.value,
+            full_name: full_name.value,
             updated_at: new Date()
         }
 
@@ -100,17 +102,18 @@ async function signOut() {
             </div>
 
             <div class="form-group">
-                <label for="username">Name</label>
+                <label for="username">Username</label>
                 <input id="username" type="text" v-model="username" />
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input id="full_name" type="text" v-model="full_name"/>
             </div>
 
             <div class="form-group">
                 <label for="website">Website</label>
                 <input id="website" type="url" v-model="website" />
-            </div>
-
-            <div class="form-group avatar-group">
-                <Avatar v-model:path="avatar_url" @upload="updateProfile" size="10" />
             </div>
 
             <div class="form-group">
@@ -122,7 +125,6 @@ async function signOut() {
                 <button class="button block" @click.prevent="signOut" :disabled="loading">
                     Sign Out
                 </button>
-ß
             </div>
         </form>
     </div>
