@@ -97,6 +97,7 @@ async function signOut() {
 <template>
     <div class="account-container" v-if="session">
         <form class="form-widget" @submit.prevent="updateProfile">
+            <Avatar v-model:path="avatar_url" @upload="updateProfile" size="15" />
             <div class="form-group">
                 <label for="email">Email</label>
                 <input id="email" type="text" :value="session.user.email" disabled />
@@ -109,7 +110,7 @@ async function signOut() {
 
             <div class="form-group">
                 <label for="full_name">Full Name</label>
-                <input id="full_name" type="text" v-model="full_name"/>
+                <input id="full_name" type="text" v-model="full_name" />
             </div>
 
             <div class="form-group">
@@ -117,7 +118,6 @@ async function signOut() {
                 <input id="website" type="url" v-model="website" />
             </div>
 
-            <Avatar v-model:path="avatar_url" @upload="updateProfile" size="10" />
 
             <div class="form-group">
                 <input type="submit" class="button primary block" :value="loading ? 'Loading ...' : 'Update'"
