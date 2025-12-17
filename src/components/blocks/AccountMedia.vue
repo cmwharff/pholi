@@ -2,8 +2,6 @@
     import { supabase } from '../../lib/supabaseClient'
     import { onMounted, ref } from 'vue'
     import type { Session } from '@supabase/supabase-js'
-    import router from '../../router'
-    import Avatar from './Avatar.vue'
     
     const session = ref<Session | null>(null)
     const avatar_url = ref('')
@@ -54,7 +52,7 @@
         }
     }
     
-    async function updateProfile() {
+    async function updateMedia() {
         if (!session.value) return
     
         try {
@@ -82,6 +80,6 @@
     </script>
     
     <template>
-        <div class="m-4 p-8 bg-sky-200 rounded-3xl shadow-md" v-if="session">
+        <div class="m-4 p-8 bg-sky-700 rounded-3xl shadow-md" v-if="session">
         </div>
     </template>

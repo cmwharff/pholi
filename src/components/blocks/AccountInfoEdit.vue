@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabaseClient'
 import { onMounted, ref } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import router from '../../router'
-import Avatar from './Avatar.vue'
+import Avatar from './AvatarEdit.vue'
 
 const session = ref<Session | null>(null)
 const avatar_url = ref('')
@@ -95,12 +95,13 @@ async function signOut() {
 </script>
 
 <template>
-    <div class="max-w-125 m-4 p-8 bg-sky-200 rounded-3xl shadow-md" v-if="session">
+    <div class="max-w-125 m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
         <form class="form-widget" @submit.prevent="updateProfile">
-            <Avatar v-model:path="avatar_url" @upload="updateProfile" size="15" />
+            <Avatar v-model:path="avatar_url" @upload="updateProfile" />
+
             <div class="form-group">
-                <label for="email">Email</label>
-                <input id="email" type="text" :value="session.user.email" disabled />
+                <label for="full_name">Full Name</label>
+                <input id="full_name" type="text" v-model="full_name" />
             </div>
 
             <div class="form-group">
@@ -109,15 +110,14 @@ async function signOut() {
             </div>
 
             <div class="form-group">
-                <label for="full_name">Full Name</label>
-                <input id="full_name" type="text" v-model="full_name" />
+                <label for="email">Email</label>
+                <input id="email" type="text" :value="session.user.email" disabled />
             </div>
 
             <div class="form-group">
                 <label for="website">Website</label>
                 <input id="website" type="url" v-model="website" />
             </div>
-
 
             <div class="flex flex-row justify-between">
                 <input type="submit" class="button rounded-md bg-sky-950 text-white block max-w-fit"
@@ -155,6 +155,7 @@ async function signOut() {
     border-radius: 6px;
     font-size: 1rem;
     background-color: white;
+    color: black
 }
 
 .avatar-group {
