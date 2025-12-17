@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, toRefs, watchEffect } from 'vue'
-import { supabase } from '../lib/supabaseClient'
-import Button from './ui/button/Button.vue'
-import Input from './ui/input/Input.vue'
+import { supabase } from '../../lib/supabaseClient'
+import Button from '../ui/button/Button.vue'
+import Input from '../ui/input/Input.vue'
 
 const prop = defineProps(['path', 'size'])
 const { path, size } = toRefs(prop)
@@ -65,12 +65,12 @@ watchEffect(() => {
 
 <template>
     <div class="flex flex-col items-center">
-        <img v-if="src" :src="src" alt="Avatar" class="avatar image rounded-3xl"
+        <img v-if="src" :src="src" alt="Avatar" class="avatar image rounded-3xl border-sky-950 border-5"
             :style="{ height: size + 'em', width: size + 'em' }" />
         <div v-else class="avatar no-image" :style="{ height: size + 'em', width: size + 'em' }" />
 
         <div class="flex w-auto items-center space-x-2 m-4 p-4">
-            <Input type="file" id="single" accept="image/*" />
+            <Input class="bg-white" type="file" id="single" accept="image/*" />
             <Button for="single" @click-prevent="uploadAvatar">
                 Upload
             </Button>

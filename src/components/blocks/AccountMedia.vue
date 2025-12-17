@@ -1,9 +1,9 @@
 <script setup lang="ts">
-    import { supabase } from '../lib/supabaseClient'
+    import { supabase } from '../../lib/supabaseClient'
     import { onMounted, ref } from 'vue'
     import type { Session } from '@supabase/supabase-js'
-    import router from '../router'
-    import Avatar from './blocks/Avatar.vue'
+    import router from '../../router'
+    import Avatar from './Avatar.vue'
     
     const session = ref<Session | null>(null)
     const avatar_url = ref('')
