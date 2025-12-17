@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient'
 import { onMounted, ref } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import router from '../router'
+import Avatar from './Avatar.vue'
 
 const session = ref<Session | null>(null)
 const avatar_url = ref('')
@@ -115,6 +116,8 @@ async function signOut() {
                 <label for="website">Website</label>
                 <input id="website" type="url" v-model="website" />
             </div>
+
+            <Avatar v-model:path="avatar_url" @upload="updateProfile" size="10" />
 
             <div class="form-group">
                 <input type="submit" class="button primary block" :value="loading ? 'Loading ...' : 'Update'"
