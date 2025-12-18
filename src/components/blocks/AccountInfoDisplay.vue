@@ -55,7 +55,7 @@ async function getProfile() {
 </script>
 
 <template>
-    <div class="max-w-125 m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
+    <div class="m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
         <Avatar v-model:path="avatar_url" />
         <h2 class="mt-4">{{ full_name }}</h2>
         <h3 class="mt-2">@{{ username }}</h3>

@@ -4,8 +4,8 @@ import { supabase } from '../../lib/supabaseClient'
 import Button from '../ui/button/Button.vue'
 import Input from '../ui/input/Input.vue'
 
-const prop = defineProps(['path', 'size'])
-const { path, size } = toRefs(prop)
+const prop = defineProps(['path'])
+const { path} = toRefs(prop)
 
 const emit = defineEmits(['upload', 'update:path'])
 const uploading = ref(false)
@@ -45,7 +45,6 @@ const uploadAvatar = async (evt: Event) => {
                 .upload(filePath, file, { upsert: true })
 
             if (error) throw error
-
             emit('update:path', filePath)
             emit('upload')
         } catch (error) {
@@ -65,15 +64,14 @@ watchEffect(() => {
 
 <template>
     <div class="flex flex-col items-center">
-        <div class="aspect-square overflow-hidden">
-        <img v-if="src" :src="src" alt="Avatar" class="w-full h-full avatar image rounded-3xl border-sky-950 border-5 object-cover"/>
-        <div v-else class="avatar no-image" :style="{ height: size + 'em', width: size + 'em' }" /></div>
+        <div class="w-full aspect-square overflow-hidden">
+            <img v-if="src" :src="src" alt="Avatar"
+                class="w-full h-full avatar image rounded-3xl border-sky-950 border-5 object-cover" />
+            <div v-else class="min-w-full min-h-full avatar image rounded-3xl bg-sky-950 border-sky-950 border-5"></div>
+        </div>
 
-        <div class="flex w-auto items-center space-x-2 m-4 p-4">
-            <Input class="bg-white" type="file" id="single" accept="image/*" />
-            <Button for="single" @click-prevent="uploadAvatar">
-                Upload
-            </Button>
+        <div class="flex w-auto items-center space-x-2 ml-0 mr-0 mt-6 mb-6">
+            <Input class="bg-white w-full text-black" type="file" id="single" accept="image/*" @change="uploadAvatar"/>
         </div>
     </div>
 </template>

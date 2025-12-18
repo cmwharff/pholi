@@ -14,7 +14,6 @@ import { Label } from '@/components/ui/label'
 
 const email = ref("")
 const password = ref("")
-const repeatPassword = ref("")
 const error = ref<string | null>(null)
 const isLoading = ref(false)
 const success = ref(false)
@@ -22,18 +21,14 @@ const success = ref(false)
 const handleLogin = async () => {
     error.value = null
 
-    if (password.value !== repeatPassword.value) {
-        error.value = "Passwords do not match"
-        return
-    }
-
     isLoading.value = true
     try {
-        const { error: supabaseError } = await supabase.auth.signUp({
+        const { error: supabaseError } = await supabase.auth.signInWithPassword({
             email: email.value,
             password: password.value,
         })
         if (supabaseError) throw supabaseError
+        window.location.href = "/protected"
         success.value = true
     } catch (err: unknown) {
         error.value = err instanceof Error ? err.message : "An error occurred"

@@ -2,8 +2,8 @@
 import { ref, toRefs, watchEffect } from 'vue'
 import { supabase } from '../../lib/supabaseClient'
 
-const prop = defineProps(['path', 'size'])
-const { path, size } = toRefs(prop)
+const prop = defineProps(['path'])
+const { path } = toRefs(prop)
 
 const src = ref('')
 
@@ -28,8 +28,10 @@ watchEffect(() => {
 
 <template>
     <div class="flex flex-col items-center">
-        <div class="aspect-square overflow-hidden">
-        <img v-if="src" :src="src" alt="Avatar" class="w-full h-full avatar image rounded-3xl border-sky-950 border-5 object-cover"/>
-        <div v-else class="avatar no-image" :style="{ height: size + 'em', width: size + 'em' }" /></div>
+        <div class="aspect-square overflow-hidden w-full">
+            <img v-if="src" :src="src" alt="Avatar"
+                class="w-full h-full avatar image rounded-3xl border-sky-950 border-5 object-cover" />
+            <div v-else class="min-w-full min-h-full avatar image rounded-3xl bg-sky-950 border-sky-950 border-5"></div>
+        </div>
     </div>
 </template>

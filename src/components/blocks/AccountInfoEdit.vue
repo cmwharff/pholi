@@ -2,15 +2,16 @@
 import { supabase } from '../../lib/supabaseClient'
 import { onMounted, ref } from 'vue'
 import type { Session } from '@supabase/supabase-js'
-import router from '../../router'
 import Avatar from './AvatarEdit.vue'
 
 const session = ref<Session | null>(null)
 const avatar_url = ref('')
 const loading = ref(true)
 const username = ref('')
-const website = ref('')
+const website_url = ref('')
+const website_title = ref('')
 const full_name = ref('')
+const bio = ref('')
 
 onMounted(async () => {
     const {
@@ -35,17 +36,21 @@ async function getProfile() {
 
         const { data, error, status } = await supabase
             .from('profiles')
-            .select('username, website, avatar_url, full_name')
+            .select('username, website, avatar_url, full_name, bio')
             .eq('id', user.id)
             .single()
 
         if (error && status !== 406) throw error
 
         if (data) {
+            const website_json = data.website ?? { url: '', title: '' }
+
             username.value = data.username ?? ''
-            website.value = data.website ?? ''
             avatar_url.value = data.avatar_url ?? ''
             full_name.value = data.full_name ?? ''
+            bio.value = data.bio ?? ''
+            website_title.value = website_json.title ?? ''
+            website_url.value = website_json.url ?? ''
         }
     } catch (error) {
         if (error instanceof Error) alert(error.message)
@@ -64,9 +69,13 @@ async function updateProfile() {
         const updates = {
             id: user.id,
             username: username.value,
-            website: website.value,
+            website: {
+                url: website_url.value,
+                title: website_title.value
+            },
             avatar_url: avatar_url.value,
             full_name: full_name.value,
+            bio: bio.value,
             updated_at: new Date()
         }
 
@@ -78,24 +87,10 @@ async function updateProfile() {
         loading.value = false
     }
 }
-
-async function signOut() {
-    try {
-        loading.value = true
-        const { error } = await supabase.auth.signOut()
-        if (error) throw error
-
-        router.push({ name: 'auth' })
-    } catch (error) {
-        if (error instanceof Error) alert(error.message)
-    } finally {
-        loading.value = false
-    }
-}
 </script>
 
 <template>
-    <div class="max-w-125 m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
+    <div class="m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
         <form class="form-widget" @submit.prevent="updateProfile">
             <Avatar v-model:path="avatar_url" @upload="updateProfile" />
 
@@ -115,17 +110,22 @@ async function signOut() {
             </div>
 
             <div class="form-group">
-                <label for="website">Website</label>
-                <input id="website" type="url" v-model="website" />
+                <label for="website_url">Website URL</label>
+                <input id="website_url" type="url" v-model="website_url" />
             </div>
 
-            <div class="flex flex-row justify-between">
-                <input type="submit" class="button rounded-md bg-sky-950 text-white block max-w-fit"
-                    :value="loading ? 'Loading ...' : 'Update'" :disabled="loading" />
-                <button class="button rounded-md bg-sky-950 text-white block max-w-fit" @click.prevent="signOut"
-                    :disabled="loading">
-                    Sign Out
-                </button>
+            <div class="form-group">
+                <label for="website_title">Website Label</label>
+                <input id="website_title" type="text" v-model="website_title" />
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <input id="bio" type="text" v-model="bio" />
+            </div>
+
+            <div class="flex flex-row justify-center">
+                <input type="submit" class="mt-4 button rounded-md bg-sky-950 text-white block max-w-fit"
+                    :value="loading ? 'Loading ...' : 'Save Information'" :disabled="loading" />
             </div>
         </form>
     </div>

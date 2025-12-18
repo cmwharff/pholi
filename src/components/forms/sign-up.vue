@@ -18,6 +18,8 @@ const repeatPassword = ref("")
 const error = ref<string | null>(null)
 const isLoading = ref(false)
 const success = ref(false)
+const full_name = ref('')
+const username = ref('')
 
 const handleSignUp = async () => {
     error.value = null
@@ -32,6 +34,12 @@ const handleSignUp = async () => {
         const { error: supabaseError } = await supabase.auth.signUp({
             email: email.value,
             password: password.value,
+            options: {
+                data: {
+                    full_name: full_name.value,
+                    username: username.value
+                }
+            }
         })
         if (supabaseError) throw supabaseError
         success.value = true
@@ -66,6 +74,14 @@ const handleSignUp = async () => {
             <CardContent>
                 <form @submit.prevent="handleSignUp">
                     <div class="flex flex-col gap-6">
+                        <div class="grid gap-2">
+                            <Label for="full_name">Name</Label>
+                            <Input id="full_name" type="text" placeholder="Pepper the cat" required v-model="full_name" />
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="username">Username</Label>
+                            <Input id="username" type="text" placeholder="peppercorn" required v-model="username" />
+                        </div>
                         <!-- Email -->
                         <div class="grid gap-2">
                             <Label for="email">Email</Label>
