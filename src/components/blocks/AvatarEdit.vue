@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, toRefs, watchEffect } from 'vue'
 import { supabase } from '../../lib/supabaseClient'
-import Button from '../ui/button/Button.vue'
 import Input from '../ui/input/Input.vue'
 
 const prop = defineProps(['path'])
