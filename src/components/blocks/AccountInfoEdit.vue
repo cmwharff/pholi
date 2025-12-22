@@ -90,7 +90,8 @@ async function updateProfile() {
 </script>
 
 <template>
-    <div class="m-4 p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
+    <div class="flex">
+        <div class="p-8 bg-sky-700 rounded-3xl shadow-md text-white text-sm" v-if="session">
         <form class="form-widget" @submit.prevent="updateProfile">
             <Avatar v-model:path="avatar_url" @upload="updateProfile" />
 
@@ -129,6 +130,8 @@ async function updateProfile() {
             </div>
         </form>
     </div>
+    </div>
+    
 </template>
 
 <style scoped>

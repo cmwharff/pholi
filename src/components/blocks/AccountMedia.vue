@@ -16,7 +16,6 @@ const uploading = ref(false)
 
 const title = ref('')
 const description = ref('')
-const src = ref('')
 
 const media_raw: Ref<{
     title: string,
@@ -137,20 +136,6 @@ const uploadMedia = async (evt: Event) => {
 
 <template>
     <div class="flex flex-col items-center w-full m-4 gap-4">
-        <div class="flex w-full items-center">
-            <form @submit.prevent="uploadMedia" class="w-full flex flex-row justify-around">
-                <Input class="bg-white w-fit text-black" type="file" id="single" accept="image/*"
-                    @change="uploadMedia" />
-                <div>
-                    <label for="title">Title</label>
-                    <input id="title" type="text" v-model="title" />
-                </div>
-                <div>
-                    <label for="description">Description</label>
-                    <input id="description" type="text" v-model="description" />
-                </div>
-            </form>
-        </div>
         <div
             class=" overflow-y-scroll h-fit rounded-3xl bg-sky-950 border-sky-950 border-5 p-4 grid grid-cols-4 grid-flow-dense gap-4">
             <div v-for="item in media_list" :key="item.id">
