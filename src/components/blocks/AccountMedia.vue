@@ -9,14 +9,6 @@ const session = ref<Session | null>(null)
 const loading = ref(true)
 const uploading = ref(false)
 
-// const prop = defineProps(['path'])
-// const { path } = toRefs(prop)
-
-// const emit = defineEmits(['upload', 'update:path'])
-
-const title = ref('')
-const description = ref('')
-
 const media_raw: Ref<{
     title: string,
     description: string,
@@ -93,41 +85,6 @@ async function downloadMedia() {
             })
         } catch (error) {
             if (error instanceof Error) alert(error.message)
-        }
-    }
-}
-
-const uploadMedia = async (evt: Event) => {
-    if (!session.value) return
-    const input = evt.target as HTMLInputElement
-
-    if (!input.files || input.files.length === 0) {
-        alert('You must select an image to upload.')
-        return
-    }
-
-    const file = input.files[0]
-
-    if (file) {
-        const { user } = session.value
-        const fileExt = file.name.split('.').pop()
-        const filePath = `${Math.random()}.${fileExt}`
-        const new_media = {
-            title: title.value,
-            description: description.value,
-            id: "something",
-            aspect: 'square',
-            size: 'sm',
-            path: filePath
-        }
-        try {
-            uploading.value = true
-            await supabase.storage.from('media').upload(filePath, file)
-            await supabase.from('profiles').update({ media: [...media_raw.value, new_media] }).eq('id', user?.id)
-        } catch (error) {
-            if (error instanceof Error) alert(error.message)
-        } finally {
-            uploading.value = false
         }
     }
 }
