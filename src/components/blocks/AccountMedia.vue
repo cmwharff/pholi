@@ -3,11 +3,9 @@ import { supabase } from '../../lib/supabaseClient'
 import { onMounted, ref } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import type { Ref } from 'vue'
-import Input from '../ui/input/Input.vue'
 
 const session = ref<Session | null>(null)
 const loading = ref(true)
-const uploading = ref(false)
 
 const media_raw: Ref<{
     title: string,
@@ -92,11 +90,11 @@ async function downloadMedia() {
 </script>
 
 <template>
-    <div class="flex flex-col items-center w-full m-4 gap-4">
+    <div class="flex flex-col items-center w-full gap-4">
         <div
-            class=" overflow-y-scroll h-fit rounded-3xl bg-sky-950 border-sky-950 border-5 p-4 grid grid-cols-4 grid-flow-dense gap-4">
+            class="h-fit rounded-3xl bg-sky-950 border-sky-950 border-5 p-4 grid grid-cols-4 grid-flow-dense gap-4">
             <div v-for="item in media_list" :key="item.id">
-                <img :src="item.src" alt="media" class="w-full rounded-3xl border-sky-700 border-5" />
+                <img :src="item.src" alt="media" class="w-full aspect-square object-cover rounded-3xl border-sky-700 border-5" />
             </div>
         </div>
     </div>

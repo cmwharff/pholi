@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Heading from "../Heading.vue"
 
 const email = ref("")
 const password = ref("")
@@ -40,7 +41,8 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-6">
+    <Heading />
+    <div class="flex flex-col gap-6 m-auto w-1/2 mt-8">
         <Card>
             <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>

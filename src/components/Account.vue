@@ -40,7 +40,8 @@ async function signOut() {
 <template>
     <Heading />
     <div class="flex m-4 h-fit">
-        <Tabs default-value="profile" class="basis-1/4 flex-col flex m-4 h-fit w-full gap-4 items-center">
+
+        <Tabs default-value="profile" class="basis-1/4 flex-col flex m-4 h-full w-full gap-4 items-center">
             <TabsList>
                 <TabsTrigger value="profile">
                     Profile
@@ -75,6 +76,23 @@ async function signOut() {
                 <ManageMedia />
             </TabsContent>
         </Tabs>
-        <AccountMedia class="basis-3/4 w-full h-fit" />
+
+        <Tabs default-value="pholi" class="basis-3/4 flex-col flex m-4 h-fit w-full gap-4 items-center">
+            <TabsList>
+                <TabsTrigger value="pholi">
+                    Pholi
+                </TabsTrigger>
+                <TabsTrigger value="feed">
+                    Feed
+                </TabsTrigger>
+            </TabsList>
+            <TabsContent value="pholi">
+                <AccountMedia class="w-full h-fit" />
+            </TabsContent>
+            <TabsContent value="feed" class="w-full">
+                <AccountMedia class="w-full h-fit" />
+            </TabsContent>
+        </Tabs>
+
     </div>
 </template>

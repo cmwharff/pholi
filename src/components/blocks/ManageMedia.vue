@@ -6,15 +6,19 @@ import type { Ref } from 'vue'
 
 import Input from '../ui/input/Input.vue'
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '../ui/accordion'
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/components/ui/tabs'
+import Slider from '../ui/slider/Slider.vue'
 
 const title = ref('')
 const description = ref('')
+const src = ref('')
+const colsNum = ref([4])
 const session = ref<Session | null>(null)
+const ticks = [1, 2, 3, 4, 5, 6]
 
 const media_raw: Ref<{
     title: string,
@@ -105,7 +109,7 @@ const uploadMedia = async (evt: Event) => {
         alert('You must select an image to upload.')
         return
     }
-    
+
     const file = target.files[0]
 
     if (file) {
@@ -132,55 +136,90 @@ const uploadMedia = async (evt: Event) => {
     }
 }
 
+const preview = async (evt: Event) => {
+    const files = (evt.target as HTMLInputElement).files;
+
+    if (files && files.length > 0) {
+        const file = files[0] as Blob;
+        console.log(file)
+        src.value = URL.createObjectURL(file);
+
+    }
+}
 </script>
 
 <template>
-    <Accordion type="single" collapsible class="w-full flex gap-4 flex-col overflow-visible" default-value="all_media">
-        <AccordionItem value="add_media" class="w-full">
-            <AccordionTrigger class="bg-sky-700 rounded-3xl text-white text-lg p-4 w-full z-20 relative">
-                Upload Media
-            </AccordionTrigger>
-            <AccordionContent class="-mt-8 pt-12 overflow-visible">
-                <div
-                    class="flex w-inherit items-center bg-sky-950 rounded-3xl rounded-t-none shadow-md text-white text-sm p-8 -mb-4 pt-16 -mt-12 z-10">
-                    <form @submit.prevent="uploadMedia" class="w-full flex flex-col justify-around gap-4 text-sm" name="addForm">
-                        <Input class="bg-white w-full text-black" type="file" id="single" accept="image/*"/>
-                        <div>
-                            <label for="title">Title</label>
-                            <Input id="title" type="text" v-model="title" required/>
-                        </div>
-                        <div>
-                            <label for="description">Description</label>
-                            <Input id="description" type="text" v-model="description"/>
-                        </div>
-                        <input type="submit" class="button rounded-md text-white block max-w-fit p-2 bg-sky-700" />
-                    </form>
-                </div>
-            </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="all_media" class="w-full">
-            <AccordionTrigger class="bg-sky-700 rounded-3xl text-white text-lg p-4 w-full z-20 relative">
+    <Tabs class=" flex-col flex w-full gap-4 items-center h-3/4" default-value="all">
+        <TabsList>
+            <TabsTrigger value="layout">
+                Layout
+            </TabsTrigger>
+            <TabsTrigger value="upload">
+                Add
+            </TabsTrigger>
+            <TabsTrigger value="all">
                 All
-            </AccordionTrigger>
-            <AccordionContent class="-mt-8 pt-12 overflow-visible">
-                <div
-                    class="grid grid-cols-2 gap-2 grid-flow-row justify-start w-inherit items-start bg-sky-950 rounded-3xl rounded-t-none shadow-md text-white text-sm p-4 -mb-4 pt-12 -mt-12 z-10 max-h-[50vh] overflow-y-scroll">
-                    <div v-for="item in media_list" :key="item.id">
-                        <img :src="item.src" alt="media" :class="['w-full rounded-xl border-sky-700 border-5']" />
+            </TabsTrigger>
+            <TabsTrigger value="staged">
+                Staged
+            </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="layout" class="w-full">
+            <div class="w-full flex flex-col gap-4 bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 ">
+                <div class="flex flex-col gap-2">
+                    <label for="slider">Columns</label>
+                    <Slider id="slider" :default-value="[4]" :max="6" :min="1" :step="1" class="w-full h-fit"
+                        v-model="colsNum" />
+                    <div class="top-6 flex justify-between ">
+                        <div v-for="tick in ticks" :key="tick" class="relative flex flex-col items-center">
+                            <span class=" top-2 text-sm ">
+                                {{ tick }}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="staged_media" class="w-full">
-            <AccordionTrigger class="bg-sky-700 rounded-3xl text-white text-lg p-4 w-full z-20 relative">
-                Staged
-            </AccordionTrigger>
-            <AccordionContent class="-mt-8 pt-12 overflow-visible">
-                <div
-                    class="flex w-inherit items-center bg-sky-950 rounded-3xl rounded-t-none shadow-md text-white text-sm p-8 -mb-4 pt-16 -mt-12 z-10 max-h-[50vh] overflow-scroll">
+            </div>
+        </TabsContent>
+
+        <TabsContent value="upload" class="w-full">
+            <div class="flex w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 z-10">
+                <form @submit.prevent="uploadMedia" class="w-full flex flex-col justify-around gap-4 text-sm"
+                    name="addForm">
+
+                    <img v-if="src" :src="src" alt="Avatar"
+                        class="w-full h-full avatar image rounded-3xl border-sky-700 border-5 object-cover" />
+                    <Input class="bg-white w-full text-black" type="file" id="single" accept="image/*"
+                        @change="preview" />
+                    <div>
+                        <label for="title">Title</label>
+                        <Input id="title" type="text" v-model="title" required />
+                    </div>
+                    <div>
+                        <label for="description">Description</label>
+                        <Input id="description" type="text" v-model="description" />
+                    </div>
+                    <input type="submit" class="button rounded-md text-white block max-w-fit p-2 bg-sky-700"
+                        value="Submit" />
+                </form>
+            </div>
+        </TabsContent>
+
+        <TabsContent value="all" class="w-full">
+            <div
+                class="h-[60vh] grid grid-cols-2 gap-2 grid-flow-row justify-start w-inherit items-start bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 overflow-y-scroll">
+                <div v-for="item in media_list" :key="item.id">
+                    <img :src="item.src" alt="media"
+                        :class="['w-full rounded-xl border-sky-700 border-5 aspect-square object-cover']" />
                 </div>
-            </AccordionContent>
-        </AccordionItem>
-    </Accordion>
+            </div>
+        </TabsContent>
+
+        <TabsContent value="staged" class="w-full">
+            <div
+                class="flex w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 z-10 overflow-y-scroll">
+            </div>
+        </TabsContent>
+    </Tabs>
 
 </template>
