@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import { editPholiHandler, type GridItem } from '@/lib/editPholiHandler';
+import { 
+    editPholiHandler, 
+    type GridItem, 
+    type AspectType, 
+    type SizeType, 
+    aspectConfig, 
+    sizeConfig 
+} from '@/lib/editPholiHandler';
 
 const { grid, onDrop, onDragStart } = editPholiHandler()
 
-type AspectType = 1 | 2 | 0.5
-type SizeType = 1 | 2 | 3 | 4
 
-const aspectConfig: Record<AspectType, string> = {
-    1: 'aspect-square',
-    0.5: 'aspect-2/1',
-    2: 'aspect-1/2'
-}
-
-const sizeConfig: Record<SizeType, string> = {
-    1: 'w-[100%]',
-    2: 'w-[200%]',
-    3: 'w-[300%]',
-    4: 'w-[400%]'
-}
 </script>
 
 <template>
@@ -32,7 +25,8 @@ const sizeConfig: Record<SizeType, string> = {
                         sizeConfig[(cell as GridItem).size as SizeType],
                         'absolute top-0 left-0 flex items-center justify-center text-xs cursor-move text-white rounded border-4 border-sky-700 bg-amber-400 overflow-hidden'
                     ]">
-                    <img :src="(cell as GridItem).src" :alt="(cell as GridItem).label" class="object-cover border-0 w-full h-full"/>
+                    <img :src="(cell as GridItem).src" :alt="(cell as GridItem).label"
+                        class="object-cover border-0 w-full h-full" />
                 </div>
             </div>
         </template>

@@ -6,10 +6,23 @@ export type SizeType = 1 | 2 | 3 | 4
 export interface GridItem {
     id: string
     label: string
-    size: number
-    aspect: number
+    size: SizeType
+    aspect: AspectType
     primary: boolean
     src: string
+}
+
+export const aspectConfig: Record<AspectType, string> = {
+    1: 'aspect-square',
+    0.5: 'aspect-2/1',
+    2: 'aspect-1/2'
+}
+
+export const sizeConfig: Record<SizeType, string> = {
+    1: 'w-[100%]',
+    2: 'w-[200%]',
+    3: 'w-[300%]',
+    4: 'w-[400%]'
 }
 
 interface BlockCell {
@@ -17,7 +30,7 @@ interface BlockCell {
     ownerId: string
 }
 
-type GridCell = GridItem | BlockCell | null
+export type GridCell = GridItem | BlockCell | null
 type GridMatrix = GridCell[][]
 
 const COLS = 16
