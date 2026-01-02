@@ -92,7 +92,7 @@ async function downloadMedia() {
 <template>
     <div class="flex flex-col items-center w-full gap-4">
         <div
-            class="h-fit rounded-3xl bg-sky-950 border-sky-950 border-5 p-4 grid grid-cols-4 grid-flow-dense gap-4">
+            class="h-fit rounded-3xl bg-sky-950 border-sky-950 border-4 p-4 grid grid-cols-4 grid-flow-dense gap-4">
             <div v-for="item in media_list" :key="item.id">
                 <img :src="item.src" alt="media" class="w-full aspect-square object-cover rounded-3xl border-sky-700 border-5" />
             </div>

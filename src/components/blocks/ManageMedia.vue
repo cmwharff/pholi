@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabaseClient'
 import type { Ref } from 'vue'
+import { editPholiHandler } from '@/lib/editPholiHandler'
 
 import Input from '../ui/input/Input.vue'
 import {
@@ -11,14 +12,12 @@ import {
     TabsList,
     TabsTrigger,
 } from '@/components/ui/tabs'
-import Slider from '../ui/slider/Slider.vue'
 
+const { unplacedItems, onDragStart, stagedItems } = editPholiHandler()
 const title = ref('')
 const description = ref('')
 const src = ref('')
-const colsNum = ref([4])
 const session = ref<Session | null>(null)
-const ticks = [1, 2, 3, 4, 5, 6]
 
 const media_raw: Ref<{
     title: string,
@@ -151,9 +150,6 @@ const preview = async (evt: Event) => {
 <template>
     <Tabs class=" flex-col flex w-full gap-4 items-center h-3/4" default-value="all">
         <TabsList>
-            <TabsTrigger value="layout">
-                Layout
-            </TabsTrigger>
             <TabsTrigger value="upload">
                 Add
             </TabsTrigger>
@@ -164,23 +160,6 @@ const preview = async (evt: Event) => {
                 Staged
             </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="layout" class="w-full">
-            <div class="w-full flex flex-col gap-4 bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 ">
-                <div class="flex flex-col gap-2">
-                    <label for="slider">Columns</label>
-                    <Slider id="slider" :default-value="[4]" :max="6" :min="1" :step="1" class="w-full h-fit"
-                        v-model="colsNum" />
-                    <div class="top-6 flex justify-between ">
-                        <div v-for="tick in ticks" :key="tick" class="relative flex flex-col items-center">
-                            <span class=" top-2 text-sm ">
-                                {{ tick }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </TabsContent>
 
         <TabsContent value="upload" class="w-full">
             <div class="flex w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 z-10">
@@ -206,18 +185,28 @@ const preview = async (evt: Event) => {
         </TabsContent>
 
         <TabsContent value="all" class="w-full">
-            <div
-                class="h-[60vh] grid grid-cols-2 gap-2 grid-flow-row justify-start w-inherit items-start bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 overflow-y-scroll">
-                <div v-for="item in media_list" :key="item.id">
-                    <img :src="item.src" alt="media"
-                        :class="['w-full rounded-xl border-sky-700 border-5 aspect-square object-cover']" />
+            <div v-if="unplacedItems.length == 0" class="bg-sky-950 rounded-3xl shadow-md text-white text-md text-center p-4">
+                Empty!
+            </div>
+            <div v-else
+                class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
+                <div v-for="item in unplacedItems" :key="item.id" draggable="true" @dragstart="onDragStart(item)"
+                    class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
+                    <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />
                 </div>
             </div>
         </TabsContent>
 
         <TabsContent value="staged" class="w-full">
-            <div
-                class="flex w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-8 z-10 overflow-y-scroll">
+            <div v-if="stagedItems.length == 0" class="bg-sky-950 rounded-3xl shadow-md text-white text-md text-center p-4">
+                Empty!
+            </div>
+            <div v-else
+                class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
+                <div v-for="item in stagedItems" :key="item.id"
+                    class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
+                    <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />
+                </div>
             </div>
         </TabsContent>
     </Tabs>

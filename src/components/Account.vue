@@ -13,12 +13,22 @@ import {
     TabsList,
     TabsTrigger,
 } from '@/components/ui/tabs'
+import EditPholi from './blocks/EditPholi.vue'
 
-const editInfo = ref(false);
+const editInfo = ref(false)
+const editPholi = ref(false)
 const loading = ref(true)
 
 async function toggleEdit() {
     editInfo.value = !editInfo.value
+}
+
+async function editPholiOn() {
+    editPholi.value = true
+}
+
+async function savePholi() {
+    editPholi.value = false
 }
 
 async function signOut() {
@@ -43,10 +53,10 @@ async function signOut() {
 
         <Tabs default-value="profile" class="basis-1/4 flex-col flex m-4 h-full w-full gap-4 items-center">
             <TabsList>
-                <TabsTrigger value="profile">
+                <TabsTrigger value="profile" @click.prevent="savePholi">
                     Profile
                 </TabsTrigger>
-                <TabsTrigger value="media">
+                <TabsTrigger value="media" @click.prevent="editPholiOn">
                     Manage Media
                 </TabsTrigger>
             </TabsList>
@@ -86,8 +96,13 @@ async function signOut() {
                     Feed
                 </TabsTrigger>
             </TabsList>
-            <TabsContent value="pholi">
-                <AccountMedia class="w-full h-fit" />
+            <TabsContent value="pholi" class="w-full">
+                <div v-if="editPholi">
+                    <EditPholi class="w-full h-fit" />
+                </div>
+                <div v-else >
+                    <AccountMedia class="w-full h-fit" />
+                </div>
             </TabsContent>
             <TabsContent value="feed" class="w-full">
                 <AccountMedia class="w-full h-fit" />
