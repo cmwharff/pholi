@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 
 export type AspectType = 1 | 2 | 0.5
-export type SizeType = 1 | 2 | 3 | 4
+export type SizeType = 5 | 2 | 3 | 4
 
 export interface GridItem {
     id: string
@@ -19,10 +19,10 @@ export const aspectConfig: Record<AspectType, string> = {
 }
 
 export const sizeConfig: Record<SizeType, string> = {
-    1: 'w-[100%]',
     2: 'w-[200%]',
     3: 'w-[300%]',
-    4: 'w-[400%]'
+    4: 'w-[400%]',
+    5: 'w-[500%]'
 }
 
 interface BlockCell {
@@ -33,8 +33,8 @@ interface BlockCell {
 export type GridCell = GridItem | BlockCell | null
 type GridMatrix = GridCell[][]
 
-const COLS = 16
-const ROWS = 9
+export const COLS = 16
+export const ROWS = 9
 
 const grid = ref<GridMatrix>(
     Array.from({ length: ROWS }, () =>
@@ -43,11 +43,11 @@ const grid = ref<GridMatrix>(
 )
 
 const items = ref<GridItem[]>([
-    { id: 'a', label: 'a: xs square', size: 1, aspect: 1, primary: true, src: 'standin/temp-1.jpeg' },
-    { id: 'b', label: 'b: sm wide', size: 2, aspect: 0.5, primary: true, src: 'standin/temp-2.jpeg' },
-    { id: 'c', label: 'c: lg square', size: 4, aspect: 1, primary: true, src: 'standin/temp-3.jpeg' },
-    { id: 'd', label: 'd: md tall', size: 3, aspect: 2, primary: true, src: 'standin/temp-1.jpeg' },
-    { id: 'e', label: 'e: sm tall', size: 2, aspect: 2, primary: true, src: 'standin/temp-2.jpeg' }
+    { id: 'a', label: 'a: xs square', size: 2, aspect: 1, primary: true, src: 'standin/temp-1.jpeg' },
+    { id: 'b', label: 'b: sm wide', size: 2, aspect: 1, primary: true, src: 'standin/temp-2.jpeg' },
+    { id: 'c', label: 'c: lg square', size: 2, aspect: 1, primary: true, src: 'standin/temp-3.jpeg' },
+    { id: 'd', label: 'd: md tall', size: 2, aspect: 1, primary: true, src: 'standin/temp-4.jpeg' },
+    { id: 'e', label: 'e: sm tall', size: 2, aspect: 1, primary: true, src: 'standin/temp-5.jpeg' }
 ])
 
 const draggedItem = ref<GridItem | null>(null)

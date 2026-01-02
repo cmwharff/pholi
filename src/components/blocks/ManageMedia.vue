@@ -4,7 +4,6 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabaseClient'
 import type { Ref } from 'vue'
 import { editPholiHandler } from '@/lib/editPholiHandler'
-import MediaMenu from '../ui/MediaMenu.vue'
 import Input from '../ui/input/Input.vue'
 import {
     Tabs,
@@ -154,7 +153,7 @@ const preview = async (evt: Event) => {
                 Add
             </TabsTrigger>
             <TabsTrigger value="all">
-                All
+                Unplaced
             </TabsTrigger>
             <TabsTrigger value="staged">
                 Staged
@@ -193,7 +192,6 @@ const preview = async (evt: Event) => {
                 <div v-for="item in unplacedItems" :key="item.id" draggable="true" @dragstart="onDragStart(item)"
                     class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
                     <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />
-                    <MediaMenu :item="item" />
                 </div>
             </div>
         </TabsContent>
