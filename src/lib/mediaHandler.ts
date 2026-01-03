@@ -47,7 +47,6 @@ const pholi: Ref<({
     width: SizeType;
     height: SizeType;
     primary: boolean;
-    src: string;
 } | {
     id: "block";
     ownerId: string;
@@ -57,7 +56,6 @@ const pholi: Ref<({
     width: SizeType;
     height: SizeType;
     primary: boolean;
-    src: string;
 } | {
     id: "block";
     ownerId: string;
@@ -147,9 +145,7 @@ const preview = async (evt: Event) => {
 
     if (files && files.length > 0) {
         const file = files[0] as Blob;
-        console.log(file)
         src.value = URL.createObjectURL(file);
-
     }
 }
 
@@ -173,7 +169,6 @@ const stagedItems = computed(() =>
 
 async function updatePholi() {
     if (!session.value) return
-
     try {
         const { user } = session.value
 
@@ -213,7 +208,6 @@ async function loadMedia() {
 }
 
 async function downloadMedia() {
-    console.log(media_list)
     for (let item of Object.values(media_raw.value)) {
         if (!media_list.value.find(entry => item.id == entry.id)) {
             try {
@@ -222,7 +216,6 @@ async function downloadMedia() {
                     throw error;
                 }
                 const url = URL.createObjectURL(data)
-                console.log(url)
                 media_list.value.push({
                     id: `${item.id}`,
                     label: `${item.label}`,
@@ -243,10 +236,20 @@ function onDragStart(item: GridItem) {
     draggedItem.value = item
 }
 
+function getSrc(id: string) {
+    return media_list.value.find(item => item.id === id)?.src
+}
+
 function onDrop(row: number, col: number) {
     if (!draggedItem.value) return
 
-    const item = draggedItem.value
+    const item = {
+        id: draggedItem.value.id,
+        label: draggedItem.value.label,
+        width: draggedItem.value.width,
+        height: draggedItem.value.height,
+        primary: draggedItem.value.primary
+    }
     const width = item.width
     const height = item.height
 
@@ -331,6 +334,7 @@ export function mediaHandler() {
         stagedItems,
         widthConfig,
         heightConfig,
+        getSrc,
         preview,
         uploadMedia,
         updatePholi,

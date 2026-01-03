@@ -12,7 +12,7 @@ import Slider from '../ui/slider/Slider.vue'
 import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
 import { onMounted } from 'vue';
 
-const { pholi, onDrop, onDragStart, widthConfig, heightConfig, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
+const { pholi, onDrop, onDragStart, widthConfig, heightConfig, getSrc, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
 
 onMounted(async () => {
     // console.log(pholi)
@@ -34,7 +34,7 @@ onMounted(async () => {
                     ]">
                     <ContextMenu class="w-full h-full">
                         <ContextMenuTrigger class="w-full h-full p-2">
-                            <img :src="(cell as GridItem).src" :alt="(cell as GridItem).label"
+                            <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
                                 class="object-cover w-full h-full border-4 border-sky-700 rounded-3xl" />
                         </ContextMenuTrigger>
                         <ContextMenuContent>
