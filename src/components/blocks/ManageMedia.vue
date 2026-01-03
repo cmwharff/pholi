@@ -15,7 +15,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
 
 <template>
     <div class="flex flex-col gap-4">
-        <Tabs class=" flex-col flex w-full gap-4 items-center h-3/4" default-value="all">
+        <Tabs class=" flex-col flex w-full gap-4 items-center" default-value="all">
             <TabsList>
                 <TabsTrigger value="upload">
                     Add
@@ -53,7 +53,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
 
             <TabsContent value="all" class="w-full">
                 <div
-                    class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
+                    class="grid grid-cols-2 auto-rows-max gap-4 w-inherit items-center bg-sky-950 h-[65vh] rounded-3xl shadow-md text-white text-sm p-4 overflow-y-scroll">
                     <div draggable="true" @dragstart="onDragFiller()"
                         class="cursor-move border-sky-700 bg-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden w-full h-full">
                     </div>
@@ -70,7 +70,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
                     Empty!
                 </div>
                 <div v-else
-                    class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
+                    class="grid grid-cols-2 gap-4 h-[65vh] auto-rows-max w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
                     <div v-for="item in stagedItems" :key="item.id"
                         class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
                         <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />
