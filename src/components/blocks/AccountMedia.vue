@@ -13,7 +13,7 @@ const { pholi, widthConfig, heightConfig, getSrc } = mediaHandler()
                 <div v-if="cell && 'id' in cell && cell.id !== 'block'" :class="[
                     widthConfig[(cell as GridItem).width as SizeType],
                     heightConfig[(cell as GridItem).height as SizeType],
-                    'absolute top-0 left-0 flex items-center justify-center text-xs cursor-move text-white overflow-hidden'
+                    'absolute top-0 left-0 flex items-center justify-center text-xs text-white overflow-hidden'
                 ]">
                     <div class="w-full h-full p-2">
                         <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"

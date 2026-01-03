@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/tabs'
 import { mediaHandler } from '@/lib/mediaHandler'
 
-const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragStart, updatePholi } = mediaHandler()
+const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragUnstaged, updatePholi } = mediaHandler()
 
 </script>
 
@@ -58,7 +58,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
                 </div>
                 <div v-else
                     class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
-                    <div v-for="item in unplacedItems" :key="item.id" draggable="true" @dragstart="onDragStart(item)"
+                    <div v-for="item in unplacedItems" :key="item.id" draggable="true" @dragstart="onDragUnstaged(item)"
                         class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
                         <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />
                     </div>

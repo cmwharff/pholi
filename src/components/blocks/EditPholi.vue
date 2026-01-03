@@ -11,7 +11,7 @@ import {
 import Slider from '../ui/slider/Slider.vue'
 import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
 
-const { pholi, onDrop, onDragStart, widthConfig, heightConfig, getSrc, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
+const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
 
 </script>
 
@@ -22,7 +22,7 @@ const { pholi, onDrop, onDragStart, widthConfig, heightConfig, getSrc, removeIte
                 class="relative overflow-visible aspect-square outline-1 outline-dashed rounded-lg m-0"
                 @dragover.prevent @drop="onDrop(rowIndex, colIndex)">
                 <div v-if="cell && 'id' in cell && cell.id !== 'block'" draggable="true"
-                    @dragstart="onDragStart(cell as GridItem)" :class="[
+                    @dragstart="onDragStaged(cell as GridItem)" :class="[
                         widthConfig[(cell as GridItem).width as SizeType],
                         heightConfig[(cell as GridItem).height as SizeType],
                         'absolute top-0 left-0 flex items-center justify-center text-xs cursor-move text-white overflow-hidden'

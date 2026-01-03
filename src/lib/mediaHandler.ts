@@ -14,18 +14,21 @@ export interface GridItem {
     width: SizeType
     height: SizeType
     primary: boolean
-    src: string
+}
+
+interface MediaRaw {
+    id: string
+    label: string
+    description: string
+    path: string
+    timestamp: number
 }
 
 interface MediaItem {
     id: string
     label: string
     description: string
-    width: number
-    height: number
-    primary: boolean
-    path: string
-    timestamp: number
+    src: string
 }
 
 interface BlockCell {
@@ -40,8 +43,8 @@ const description = ref('')
 const src = ref('')
 const width = ref([2])
 const height = ref([2])
-const media_raw: Ref<MediaItem[]> = ref([])
-const media_list: Ref<GridItem[]> = ref([])
+const media_raw: Ref<MediaRaw[]> = ref([])
+const media_list: Ref<MediaItem[]> = ref([])
 const pholi: Ref<({
     id: string;
     label: string;
@@ -124,9 +127,6 @@ const uploadMedia = async (evt: Event) => {
             id: filePath,
             path: filePath,
             label: title.value,
-            width: 2,
-            height: 2,
-            primary: true,
             timeStamp: Date.now(),
             description: description.value
         }
@@ -182,6 +182,7 @@ async function updatePholi() {
     } catch (error) {
         if (error instanceof Error) alert(error.message)
     }
+console.log("pholi saved")
 }
 
 async function loadMedia() {
@@ -221,9 +222,6 @@ async function downloadMedia() {
                     id: `${item.id}`,
                     label: `${item.label}`,
                     description: `${item.description}`,
-                    width: item.width as SizeType,
-                    height: item.height as SizeType,
-                    primary: item.primary,
                     src: url
                 })
             } catch (error) {
@@ -233,8 +231,19 @@ async function downloadMedia() {
     }
 }
 
-function onDragStart(item: GridItem) {
+function onDragStaged(item: GridItem) {
     draggedItem.value = item
+}
+
+function onDragUnstaged(item: MediaItem) {
+    draggedItem.value = {
+        id: item.id,
+        label: item.label,
+        width: 2,
+        height: 2,
+        primary: true,
+        description: item.description
+    }
 }
 
 function getSrc(id: string) {
@@ -249,7 +258,8 @@ function onDrop(row: number, col: number) {
         label: draggedItem.value.label,
         width: draggedItem.value.width,
         height: draggedItem.value.height,
-        primary: draggedItem.value.primary
+        primary: draggedItem.value.primary,
+        description: draggedItem.value.description
     }
     const width = item.width
     const height = item.height
@@ -281,13 +291,7 @@ function onDrop(row: number, col: number) {
     draggedItem.value = null
 }
 
-function getIndex(id: string) {
-    return stagedItems.value.findIndex(item => item.id === id)
-}
-
 function removeItem(id: string) {
-    updateWidth(id, 2)
-    updateHeight(id, 2)
     for (let r = 0; r < ROWS; r++) {
         const gridRow = pholi.value[r]
         if (!gridRow) continue
@@ -300,16 +304,26 @@ function removeItem(id: string) {
     }
 }
 
+function getIndex(id: string) {
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            if (pholi.value[r]![c]?.id === id)
+                return [r, c]
+        }
+    }
+    return [-1, -1]
+}
+
 function updateWidth(id: string, w: number) {
-    const index = getIndex(id)
-    if (stagedItems.value[index])
-        stagedItems.value[index].width = w as SizeType
+    const [row, col]: number[] = getIndex(id)
+    if (row && col && pholi?.value[row]![col])
+        (pholi.value[row][col] as GridItem).width = w as SizeType
 }
 
 function updateHeight(id: string, h: number) {
-    const index = getIndex(id)
-    if (stagedItems.value[index])
-        stagedItems.value[index].height = h as SizeType
+    const [row, col]: number[] = getIndex(id)
+    if (row && col && pholi?.value[row]![col])
+        (pholi.value[row][col] as GridItem).height = h as SizeType
 }
 
 const changeWidth = (newValue: number[] | undefined, id: string) => {
@@ -339,7 +353,8 @@ export function mediaHandler() {
         preview,
         uploadMedia,
         updatePholi,
-        onDragStart,
+        onDragStaged,
+        onDragUnstaged,
         onDrop,
         removeItem,
         changeHeight,
