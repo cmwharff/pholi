@@ -46,24 +46,18 @@ const height = ref([2])
 const media_raw: Ref<MediaRaw[]> = ref([])
 const media_list: Ref<MediaItem[]> = ref([])
 const pholi: Ref<({
-    id: string;
-    label: string;
-    width: SizeType;
-    height: SizeType;
-    primary: boolean;
-} | {
-    id: "block";
-    ownerId: string;
-} | null)[][], GridMatrix | ({
-    id: string;
-    label: string;
-    width: SizeType;
-    height: SizeType;
-    primary: boolean;
-} | {
-    id: "block";
-    ownerId: string;
-} | null)[][]> = ref([])
+    id: string
+    label: string
+    width: SizeType
+    height: SizeType
+    primary: boolean
+} | BlockCell | null)[][], GridMatrix | ({
+    id: string
+    label: string
+    width: SizeType
+    height: SizeType
+    primary: boolean
+} | BlockCell | null)[][]> = ref([])
 
 const COLS = 16
 const ROWS = 9
@@ -134,6 +128,7 @@ const uploadMedia = async (evt: Event) => {
             await supabase.storage.from('media').upload(filePath, file)
             await supabase.from('profiles').update({ media: [...media_raw.value, new_media] }).eq('id', user?.id)
             loadMedia()
+            src.value = ''
             form.reset()
         } catch (error) {
             if (error instanceof Error) alert(error.message)
@@ -142,11 +137,11 @@ const uploadMedia = async (evt: Event) => {
 }
 
 const preview = async (evt: Event) => {
-    const files = (evt.target as HTMLInputElement).files;
+    const files = (evt.target as HTMLInputElement).files
 
     if (files && files.length > 0) {
-        const file = files[0] as Blob;
-        src.value = URL.createObjectURL(file);
+        const file = files[0] as Blob
+        src.value = URL.createObjectURL(file)
     }
 }
 
@@ -182,7 +177,7 @@ async function updatePholi() {
     } catch (error) {
         if (error instanceof Error) alert(error.message)
     }
-console.log("pholi saved")
+    console.log("pholi saved")
 }
 
 async function loadMedia() {
@@ -213,9 +208,9 @@ async function downloadMedia() {
     for (let item of Object.values(media_raw.value)) {
         if (!media_list.value.find(entry => item.id == entry.id)) {
             try {
-                const { data, error } = await supabase.storage.from('media').download(item.path);
+                const { data, error } = await supabase.storage.from('media').download(item.path)
                 if (error) {
-                    throw error;
+                    throw error
                 }
                 const url = URL.createObjectURL(data)
                 media_list.value.push({
@@ -246,13 +241,23 @@ function onDragUnstaged(item: MediaItem) {
     }
 }
 
+function onDragFiller() {
+    draggedItem.value = {
+        id: `filler-${Date.now()}`,
+        label: '',
+        width: 2,
+        height: 2,
+        primary: true,
+        description: ''
+    }
+}
+
 function getSrc(id: string) {
     return media_list.value.find(item => item.id === id)?.src
 }
 
 function onDrop(row: number, col: number) {
     if (!draggedItem.value) return
-
     const item = {
         id: draggedItem.value.id,
         label: draggedItem.value.label,
@@ -315,9 +320,10 @@ function getIndex(id: string) {
 }
 
 function updateWidth(id: string, w: number) {
-    const [row, col]: number[] = getIndex(id)
-    if (row && col && pholi?.value[row]![col])
-        (pholi.value[row][col] as GridItem).width = w as SizeType
+    const [row, col] = getIndex(id)
+    if (pholi?.value[row!]![col!]) {
+        (pholi.value[row!]![col!] as GridItem).width = w as SizeType
+    }
 }
 
 function updateHeight(id: string, h: number) {
@@ -355,6 +361,7 @@ export function mediaHandler() {
         updatePholi,
         onDragStaged,
         onDragUnstaged,
+        onDragFiller,
         onDrop,
         removeItem,
         changeHeight,

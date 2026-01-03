@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/tabs'
 import { mediaHandler } from '@/lib/mediaHandler'
 
-const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragUnstaged, updatePholi } = mediaHandler()
+const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragUnstaged, onDragFiller, updatePholi } = mediaHandler()
 
 </script>
 
@@ -21,7 +21,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
                     Add
                 </TabsTrigger>
                 <TabsTrigger value="all">
-                    Unplaced
+                    Unstaged
                 </TabsTrigger>
                 <TabsTrigger value="staged">
                     Staged
@@ -52,12 +52,11 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
             </TabsContent>
 
             <TabsContent value="all" class="w-full">
-                <div v-if="unplacedItems.length == 0"
-                    class="bg-sky-950 rounded-3xl shadow-md text-white text-md text-center p-4">
-                    Empty!
-                </div>
-                <div v-else
+                <div
                     class="grid grid-cols-2 gap-4 w-inherit items-center bg-sky-950 rounded-3xl shadow-md text-white text-sm p-4 z-10 overflow-y-scroll">
+                    <div draggable="true" @dragstart="onDragFiller()"
+                        class="cursor-move border-sky-700 bg-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden w-full h-full">
+                    </div>
                     <div v-for="item in unplacedItems" :key="item.id" draggable="true" @dragstart="onDragUnstaged(item)"
                         class="cursor-move border-sky-700 border-4 text-white aspect-square rounded-3xl overflow-hidden">
                         <img :src="item.src" :alt="item.label" class="object-cover border-0 w-full h-full" />

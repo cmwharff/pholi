@@ -30,7 +30,7 @@ const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeIt
                     <ContextMenu class="w-full h-full">
                         <ContextMenuTrigger class="w-full h-full p-2">
                             <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
-                                class="object-cover w-full h-full border-4 border-sky-700 rounded-3xl" />
+                                class="object-cover w-full h-full border-4 border-sky-700 bg-sky-700 rounded-3xl" />
                         </ContextMenuTrigger>
                         <ContextMenuContent>
                             <ContextMenuItem @click="removeItem(cell.id)" inset>
