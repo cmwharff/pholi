@@ -152,12 +152,10 @@ async function updatePholi() {
         const { user } = session.value
 
         const updates = {
-            id: user.id,
             pholi: JSON.stringify(grid.value),
             updated_at: new Date()
         }
-        console.log(updates.id)
-        const { error } = await supabase.from('profiles').upsert(updates)
+        const { error } = await supabase.from('profiles').update(updates).eq('id', user.id)
         if (error) throw error
     } catch (error) {
         if (error instanceof Error) alert(error.message)

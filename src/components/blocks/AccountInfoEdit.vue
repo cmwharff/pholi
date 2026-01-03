@@ -78,7 +78,6 @@ async function updateProfile() {
             bio: bio.value,
             updated_at: new Date()
         }
-        console.log(updates.id)
         const { error } = await supabase.from('profiles').upsert(updates)
         if (error) throw error
     } catch (error) {
