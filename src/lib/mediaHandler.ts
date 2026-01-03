@@ -328,8 +328,8 @@ function updateWidth(id: string, w: number) {
 
 function updateHeight(id: string, h: number) {
     const [row, col]: number[] = getIndex(id)
-    if (row && col && pholi?.value[row]![col])
-        (pholi.value[row][col] as GridItem).height = h as SizeType
+    if (pholi?.value[row!]![col!])
+        (pholi.value[row!]![col!] as GridItem).height = h as SizeType
 }
 
 const changeWidth = (newValue: number[] | undefined, id: string) => {
