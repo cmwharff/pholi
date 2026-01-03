@@ -16,7 +16,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
+    // "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

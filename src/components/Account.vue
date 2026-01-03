@@ -9,6 +9,8 @@ import Heading from './Heading.vue'
 import ManageMedia from './blocks/ManageMedia.vue'
 import { onMounted } from 'vue'
 import { mediaHandler } from '@/lib/mediaHandler'
+import { infoHandler } from '@/lib/infoHandler'
+import { sessionHandler } from '@/lib/sessionHandler'
 import {
     Tabs,
     TabsContent,
@@ -17,17 +19,16 @@ import {
 } from '@/components/ui/tabs'
 import EditPholi from './blocks/EditPholi.vue'
 
-const { session, loadMedia } = mediaHandler()
+const { loadMedia } = mediaHandler()
+const { getProfile } = infoHandler()
+const { loadSession, session } = sessionHandler()
 
 onMounted(async () => {
-    const {
-        data: { session: currentSession }
-    } = await supabase.auth.getSession()
-
-    session.value = currentSession
+    await loadSession()
 
     if (session.value) {
         await loadMedia()
+        await getProfile()
     }
 })
 

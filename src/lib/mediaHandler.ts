@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
-import type { Session } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 import type { Ref } from 'vue'
+import { sessionHandler } from './sessionHandler'
 
 export type SizeType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16
 type GridCell = GridItem | BlockCell | null
@@ -33,12 +33,13 @@ interface BlockCell {
     ownerId: string
 }
 
+const { session } = sessionHandler()
+
 const title = ref('')
 const description = ref('')
 const src = ref('')
 const width = ref([2])
 const height = ref([2])
-const session = ref<Session | null>(null)
 const media_raw: Ref<MediaItem[]> = ref([])
 const media_list: Ref<GridItem[]> = ref([])
 const pholi: Ref<({
