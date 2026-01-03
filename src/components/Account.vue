@@ -7,6 +7,8 @@ import AccountInfoDisplay from './blocks/AccountInfoDisplay.vue'
 import AccountMedia from './blocks/AccountMedia.vue'
 import Heading from './Heading.vue'
 import ManageMedia from './blocks/ManageMedia.vue'
+import { onMounted } from 'vue'
+import { mediaHandler } from '@/lib/mediaHandler'
 import {
     Tabs,
     TabsContent,
@@ -14,6 +16,20 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs'
 import EditPholi from './blocks/EditPholi.vue'
+
+const { session, loadMedia } = mediaHandler()
+
+onMounted(async () => {
+    const {
+        data: { session: currentSession }
+    } = await supabase.auth.getSession()
+
+    session.value = currentSession
+
+    if (session.value) {
+        await loadMedia()
+    }
+})
 
 const editInfo = ref(false)
 const editPholi = ref(false)
@@ -100,7 +116,7 @@ async function signOut() {
                 <div v-if="editPholi">
                     <EditPholi class="w-full h-fit" />
                 </div>
-                <div v-else >
+                <div v-else>
                     <AccountMedia class="w-full h-fit" />
                 </div>
             </TabsContent>

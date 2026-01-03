@@ -1,101 +1,26 @@
 <script setup lang="ts">
-import { supabase } from '../../lib/supabaseClient'
-import { onMounted, ref } from 'vue'
-import type { Session } from '@supabase/supabase-js'
-import type { Ref } from 'vue'
+import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
 
-const session = ref<Session | null>(null)
-const loading = ref(true)
-
-const media_raw: Ref<{
-    title: string,
-    description: string,
-    id: string,
-    aspect: string,
-    size: string,
-    path: string
-}[]> = ref([])
-
-const media_list: Ref<{
-    title: string,
-    description: string,
-    id: string,
-    src: string,
-    aspect: string,
-    size: string
-}[]> = ref([])
-
-onMounted(async () => {
-    const {
-        data: { session: currentSession }
-    } = await supabase.auth.getSession()
-
-    session.value = currentSession
-
-    if (session.value) {
-        await loadMedia()
-    } else {
-        loading.value = false
-    }
-})
-
-async function loadMedia() {
-    if (!session.value) return
-
-    try {
-        loading.value = true
-        const { user } = session.value
-
-        const { data, error, status } = await supabase
-            .from('profiles')
-            .select('media')
-            .eq('id', user.id)
-            .single()
-
-        if (error && status !== 406) throw error
-
-        if (data) {
-            media_raw.value = data.media ?? []
-        }
-        downloadMedia()
-    } catch (error) {
-        if (error instanceof Error) alert(error.message)
-    } finally {
-        loading.value = false
-    }
-}
-
-async function downloadMedia() {
-    for (let item of Object.values(media_raw.value)) {
-        try {
-            const { data, error } = await supabase.storage.from('media').download(item.path);
-            if (error) {
-                throw error;
-            }
-            const url = URL.createObjectURL(data)
-            media_list.value.push({
-                title: `${item.title}`,
-                description: `${item.description}`,
-                id: `${item.id}`,
-                src: url,
-                aspect: `${item.aspect}`,
-                size: `${item.size}`
-            })
-        } catch (error) {
-            if (error instanceof Error) alert(error.message)
-        }
-    }
-}
+const { pholi, widthConfig, heightConfig, getSrc } = mediaHandler()
 
 </script>
 
 <template>
-    <div class="flex flex-col items-center w-full gap-4">
-        <div
-            class="h-fit rounded-3xl bg-sky-950 border-sky-950 border-4 p-4 grid grid-cols-4 grid-flow-dense gap-4">
-            <div v-for="item in media_list" :key="item.id">
-                <img :src="item.src" alt="media" class="w-full aspect-square object-cover rounded-3xl border-sky-700 border-5" />
+    <div class="grid grid-cols-16 m-4 rounded-3xl bg-sky-950 border-sky-950 border-4 p-2">
+        <template v-for="(row, rowIndex) in pholi" :key="rowIndex">
+            <div v-for="(cell, colIndex) in row" :key="`${rowIndex}-${colIndex}`"
+                class="relative overflow-visible aspect-square rounded-lg m-0">
+                <div v-if="cell && 'id' in cell && cell.id !== 'block'" :class="[
+                    widthConfig[(cell as GridItem).width as SizeType],
+                    heightConfig[(cell as GridItem).height as SizeType],
+                    'absolute top-0 left-0 flex items-center justify-center text-xs cursor-move text-white overflow-hidden'
+                ]">
+                    <div class="w-full h-full p-2">
+                        <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
+                            class="object-cover w-full h-full border-4 border-sky-700 rounded-3xl" />
+                    </div>
+                </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
