@@ -1,14 +1,5 @@
 <script setup lang="ts">
 import {
-    editPholiHandler,
-    type GridItem,
-    type SizeType,
-    widthConfig,
-    heightConfig,
-    ROWS,
-    COLS
-} from '@/lib/editPholiHandler'
-import {
     ContextMenu,
     ContextMenuTrigger,
     ContextMenuContent,
@@ -18,57 +9,15 @@ import {
     ContextMenuSubTrigger
 } from '@/components/ui/context-menu'
 import Slider from '../ui/slider/Slider.vue'
-import { ref } from 'vue'
+import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
 
-const { grid, onDrop, onDragStart, stagedItems } = editPholiHandler()
-const width = ref([2])
-const height = ref([2])
+const { pholi, onDrop, onDragStart, widthConfig, heightConfig, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
 
-function getIndex(id: string) {
-    return stagedItems.value.findIndex(item => item.id === id)
-}
-
-function removeItem(id: string) {
-    updateWidth(id, 2)
-    updateHeight(id, 2)
-    for (let r = 0; r < ROWS; r++) {
-        const gridRow = grid.value[r]
-        if (!gridRow) continue
-        for (let c = 0; c < COLS; c++) {
-            const cell = gridRow[c]
-            if (!cell) continue
-            if ('ownerId' in cell && cell.ownerId === id) gridRow[c] = null
-            if ('id' in cell && cell.id === id) gridRow[c] = null
-        }
-    }
-}
-
-function updateWidth(id: string, w: number) {
-    const index = getIndex(id)
-    if (stagedItems.value[index])
-        stagedItems.value[index].width = w as SizeType
-}
-
-function updateHeight(id: string, h: number) {
-    const index = getIndex(id)
-    if (stagedItems.value[index])
-        stagedItems.value[index].height = h as SizeType
-}
-
-const changeWidth = (newValue: number[] | undefined, id: string) => {
-    if (newValue && newValue[0])
-        updateWidth(id, newValue[0])
-}
-
-const changeHeight = (newValue: number[] | undefined, id: string) => {
-    if (newValue && newValue[0])
-        updateHeight(id, newValue[0])
-}
 </script>
 
 <template>
     <div class="grid grid-cols-16 m-4 rounded-3xl bg-sky-950 border-sky-950 border-4 p-2">
-        <template v-for="(row, rowIndex) in grid" :key="rowIndex">
+        <template v-for="(row, rowIndex) in pholi" :key="rowIndex">
             <div v-for="(cell, colIndex) in row" :key="`${rowIndex}-${colIndex}`"
                 class="relative overflow-visible aspect-square outline-1 outline-dashed rounded-lg m-0"
                 @dragover.prevent @drop="onDrop(rowIndex, colIndex)">
