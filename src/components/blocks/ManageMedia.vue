@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabaseClient'
 import type { Ref } from 'vue'
-import { editPholiHandler } from '@/lib/editPholiHandler'
+import { editPholiHandler, type SizeType, type GridMatrix } from '@/lib/editPholiHandler'
 import Input from '../ui/input/Input.vue'
 import {
     Tabs,
@@ -36,6 +36,28 @@ const media_list: Ref<{
     size: string
 }[]> = ref([])
 
+const pholi_raw: Ref<({
+    id: string;
+    label: string;
+    width: SizeType;
+    height: SizeType;
+    primary: boolean;
+    src: string;
+} | {
+    id: "block";
+    ownerId: string;
+} | null)[][], GridMatrix | ({
+    id: string;
+    label: string;
+    width: SizeType;
+    height: SizeType;
+    primary: boolean;
+    src: string;
+} | {
+    id: "block";
+    ownerId: string;
+} | null)[][]> = ref([])
+
 onMounted(async () => {
     const {
         data: { session: currentSession }
@@ -57,7 +79,7 @@ async function loadMedia() {
 
         const { data, error, status } = await supabase
             .from('profiles')
-            .select('media')
+            .select('media, pholi')
             .eq('id', user.id)
             .single()
 
@@ -65,6 +87,7 @@ async function loadMedia() {
 
         if (data) {
             media_raw.value = data.media ?? []
+            pholi_raw.value = JSON.parse(data.pholi) ?? []
         }
         downloadMedia()
     } catch (error) {
@@ -75,7 +98,6 @@ async function loadMedia() {
 async function downloadMedia() {
     for (let item of Object.values(media_raw.value)) {
         if (!media_list.value.find(entry => item.id == entry.id)) {
-            console.log(`adding item ${item.title}`)
             try {
                 const { data, error } = await supabase.storage.from('media').download(item.path);
                 if (error) {

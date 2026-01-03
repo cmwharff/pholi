@@ -55,7 +55,7 @@ interface BlockCell {
 }
 
 export type GridCell = GridItem | BlockCell | null
-type GridMatrix = GridCell[][]
+export type GridMatrix = GridCell[][]
 
 export const COLS = 16
 export const ROWS = 9
