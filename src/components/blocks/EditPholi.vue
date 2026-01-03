@@ -2,10 +2,9 @@
 import {
     editPholiHandler,
     type GridItem,
-    type AspectType,
     type SizeType,
-    aspectConfig,
-    sizeConfig,
+    widthConfig,
+    heightConfig,
     ROWS,
     COLS
 } from '@/lib/editPholiHandler'
@@ -18,16 +17,20 @@ import {
     ContextMenuSubContent,
     ContextMenuSubTrigger
 } from '@/components/ui/context-menu'
+import Slider from '../ui/slider/Slider.vue'
+import { ref } from 'vue'
 
 const { grid, onDrop, onDragStart, stagedItems } = editPholiHandler()
+const width = ref([2])
+const height = ref([2])
 
 function getIndex(id: string) {
     return stagedItems.value.findIndex(item => item.id === id)
 }
 
 function removeItem(id: string) {
-    changeAspect(id, 1)
-    changeSize(id, 1)
+    updateWidth(id, 2)
+    updateHeight(id, 2)
     for (let r = 0; r < ROWS; r++) {
         const gridRow = grid.value[r]
         if (!gridRow) continue
@@ -40,16 +43,26 @@ function removeItem(id: string) {
     }
 }
 
-function changeAspect(id: string, ratio: number) {
+function updateWidth(id: string, w: number) {
     const index = getIndex(id)
     if (stagedItems.value[index])
-        stagedItems.value[index].aspect = ratio as AspectType
+        stagedItems.value[index].width = w as SizeType
 }
 
-function changeSize(id: string, size: number) {
+function updateHeight(id: string, h: number) {
     const index = getIndex(id)
     if (stagedItems.value[index])
-        stagedItems.value[index].size = size as SizeType
+        stagedItems.value[index].height = h as SizeType
+}
+
+const changeWidth = (newValue: number[] | undefined, id: string) => {
+    if (newValue && newValue[0])
+        updateWidth(id, newValue[0])
+}
+
+const changeHeight = (newValue: number[] | undefined, id: string) => {
+    if (newValue && newValue[0])
+        updateHeight(id, newValue[0])
 }
 </script>
 
@@ -61,8 +74,8 @@ function changeSize(id: string, size: number) {
                 @dragover.prevent @drop="onDrop(rowIndex, colIndex)">
                 <div v-if="cell && 'id' in cell && cell.id !== 'block'" draggable="true"
                     @dragstart="onDragStart(cell as GridItem)" :class="[
-                        aspectConfig[(cell as GridItem).aspect as AspectType],
-                        sizeConfig[(cell as GridItem).size as SizeType],
+                        widthConfig[(cell as GridItem).width as SizeType],
+                        heightConfig[(cell as GridItem).height as SizeType],
                         'absolute top-0 left-0 flex items-center justify-center text-xs cursor-move text-white overflow-hidden'
                     ]">
                     <ContextMenu class="w-full h-full">
@@ -76,37 +89,20 @@ function changeSize(id: string, size: number) {
                             </ContextMenuItem>
                             <ContextMenuSub>
                                 <ContextMenuSubTrigger inset>
-                                    Change aspect ratio
+                                    Width
                                 </ContextMenuSubTrigger>
-                                <ContextMenuSubContent>
-                                    <ContextMenuItem @click="changeAspect(cell.id, 1)" inset>
-                                        Square
-                                    </ContextMenuItem>
-                                    <ContextMenuItem @click="changeAspect(cell.id, 2)" inset>
-                                        Tall
-                                    </ContextMenuItem>
-                                    <ContextMenuItem @click="changeAspect(cell.id, 0.5)" inset>
-                                        Wide
-                                    </ContextMenuItem>
+                                <ContextMenuSubContent class="p-3">
+                                    <Slider :default-value="[2]" :max="16" :min="1" :step="1" v-model="width"
+                                        @update:modelValue="newValue => changeWidth(newValue, cell.id)" />
                                 </ContextMenuSubContent>
                             </ContextMenuSub>
                             <ContextMenuSub>
                                 <ContextMenuSubTrigger inset>
-                                    Change size
+                                    Height
                                 </ContextMenuSubTrigger>
-                                <ContextMenuSubContent>
-                                    <ContextMenuItem @click="changeSize(cell.id, 2)" inset>
-                                        Extra Small
-                                    </ContextMenuItem>
-                                    <ContextMenuItem @click="changeSize(cell.id, 3)" inset>
-                                        Small
-                                    </ContextMenuItem>
-                                    <ContextMenuItem @click="changeSize(cell.id, 4)" inset>
-                                        Medium
-                                    </ContextMenuItem>
-                                    <ContextMenuItem @click="changeSize(cell.id, 5)" inset>
-                                        Large
-                                    </ContextMenuItem>
+                                <ContextMenuSubContent class="p-3">
+                                    <Slider :default-value="[2]" :max="9" :min="1" :step="1" v-model="height"
+                                        @update:modelValue="newValue => changeHeight(newValue, cell.id)" />
                                 </ContextMenuSubContent>
                             </ContextMenuSub>
                         </ContextMenuContent>

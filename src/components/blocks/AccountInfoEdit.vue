@@ -78,8 +78,8 @@ async function updateProfile() {
             bio: bio.value,
             updated_at: new Date()
         }
-
-        const { error } = await supabase.from('profiles').upsert(updates, { onConflict: 'id' })
+        console.log(updates.id)
+        const { error } = await supabase.from('profiles').upsert(updates)
         if (error) throw error
     } catch (error) {
         if (error instanceof Error) alert(error.message)
