@@ -10,8 +10,13 @@ import {
 } from '@/components/ui/context-menu'
 import Slider from '../ui/slider/Slider.vue'
 import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
+import { onMounted } from 'vue';
 
 const { pholi, onDrop, onDragStart, widthConfig, heightConfig, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
+
+onMounted(async () => {
+    // console.log(pholi)
+})
 
 </script>
 
@@ -56,7 +61,6 @@ const { pholi, onDrop, onDragStart, widthConfig, heightConfig, removeItem, chang
                             </ContextMenuSub>
                         </ContextMenuContent>
                     </ContextMenu>
-
                 </div>
             </div>
         </template>

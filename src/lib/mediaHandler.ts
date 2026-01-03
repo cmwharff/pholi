@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 import type { Ref } from 'vue'
@@ -17,6 +17,17 @@ export interface GridItem {
     src: string
 }
 
+interface MediaItem {
+    id: string
+    label: string
+    description: string
+    width: number
+    height: number
+    primary: boolean
+    path: string
+    timestamp: number
+}
+
 interface BlockCell {
     id: 'block'
     ownerId: string
@@ -28,7 +39,7 @@ const src = ref('')
 const width = ref([2])
 const height = ref([2])
 const session = ref<Session | null>(null)
-const media_raw: Ref<GridItem[]> = ref([])
+const media_raw: Ref<MediaItem[]> = ref([])
 const media_list: Ref<GridItem[]> = ref([])
 const pholi: Ref<({
     id: string;
@@ -111,13 +122,14 @@ const uploadMedia = async (evt: Event) => {
         const fileExt = file.name.split('.').pop()
         const filePath = `${Math.random()}.${fileExt}`
         const new_media = {
-            title: title.value,
-            description: description.value,
             id: filePath,
-            aspect: 'square',
-            size: 'sm',
             path: filePath,
-            timeStamp: Date.now()
+            label: title.value,
+            width: 2,
+            height: 2,
+            primary: true,
+            timeStamp: Date.now(),
+            description: description.value
         }
         try {
             await supabase.storage.from('media').upload(filePath, file)
@@ -159,19 +171,6 @@ const stagedItems = computed(() =>
     )
 )
 
-onMounted(async () => {
-    const {
-        data: { session: currentSession }
-    } = await supabase.auth.getSession()
-
-    session.value = currentSession
-
-    if (session.value) {
-        await loadMedia()
-    } else {
-    }
-})
-
 async function updatePholi() {
     if (!session.value) return
 
@@ -207,27 +206,29 @@ async function loadMedia() {
             media_raw.value = data.media ?? []
             pholi.value = JSON.parse(data.pholi) ?? []
         }
-        downloadMedia()
+        await downloadMedia()
     } catch (error) {
         if (error instanceof Error) alert(error.message)
     }
 }
 
 async function downloadMedia() {
+    console.log(media_list)
     for (let item of Object.values(media_raw.value)) {
         if (!media_list.value.find(entry => item.id == entry.id)) {
             try {
-                const { data, error } = await supabase.storage.from('media').download(item.src);
+                const { data, error } = await supabase.storage.from('media').download(item.path);
                 if (error) {
                     throw error;
                 }
                 const url = URL.createObjectURL(data)
+                console.log(url)
                 media_list.value.push({
                     id: `${item.id}`,
                     label: `${item.label}`,
                     description: `${item.description}`,
                     width: item.width as SizeType,
-                    height: item.height,
+                    height: item.height as SizeType,
                     primary: item.primary,
                     src: url
                 })
@@ -322,6 +323,7 @@ export function mediaHandler() {
         src,
         title,
         description,
+        session,
         width,
         height,
         pholi,
@@ -336,6 +338,7 @@ export function mediaHandler() {
         onDrop,
         removeItem,
         changeHeight,
-        changeWidth
+        changeWidth,
+        loadMedia
     }
 }

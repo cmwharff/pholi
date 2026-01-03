@@ -8,8 +8,22 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs'
 import { mediaHandler } from '@/lib/mediaHandler'
+import { supabase } from '@/lib/supabaseClient'
+import { onMounted } from 'vue'
 
-const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragStart, updatePholi } = mediaHandler()
+const { src, title, description, session, unplacedItems, stagedItems, preview, uploadMedia, onDragStart, updatePholi, loadMedia } = mediaHandler()
+
+onMounted(async () => {
+    const {
+        data: { session: currentSession }
+    } = await supabase.auth.getSession()
+
+    session.value = currentSession
+
+    if (session.value) {
+        await loadMedia()
+    }
+})
 </script>
 
 <template>
