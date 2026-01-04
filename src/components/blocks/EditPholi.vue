@@ -4,14 +4,16 @@ import {
     ContextMenuTrigger,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger
+    // ContextMenuSub,
+    // ContextMenuSubContent,
+    // ContextMenuSubTrigger
 } from '@/components/ui/context-menu'
-import Slider from '../ui/slider/Slider.vue'
-import { mediaHandler, type SizeType, type GridItem } from '@/lib/mediaHandler'
+// import Slider from '../ui/slider/Slider.vue'
+import { mediaHandler, type SizeType, type GridItem, type SizeCell } from '@/lib/mediaHandler'
 
-const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeItem, changeWidth, width, changeHeight, height } = mediaHandler()
+const { pholi, onDrop, onDragStaged, onDragSize, widthConfig, heightConfig, getSrc, removeItem, 
+    // changeWidth, width, changeHeight, height 
+} = mediaHandler()
 
 </script>
 
@@ -21,7 +23,7 @@ const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeIt
             <div v-for="(cell, colIndex) in row" :key="`${rowIndex}-${colIndex}`"
                 class="relative overflow-visible aspect-square outline-1 outline-dashed rounded-lg m-0"
                 @dragover.prevent @drop="onDrop(rowIndex, colIndex)">
-                <div v-if="cell && 'id' in cell && cell.id !== 'block'" draggable="true"
+                <div v-if="cell && 'id' in cell && cell.id !== 'block' && !cell.id.startsWith('size-')" draggable="true"
                     @dragstart="onDragStaged(cell as GridItem)" :class="[
                         widthConfig[(cell as GridItem).width as SizeType],
                         heightConfig[(cell as GridItem).height as SizeType],
@@ -36,7 +38,7 @@ const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeIt
                             <ContextMenuItem @click="removeItem(cell.id)" inset>
                                 Remove
                             </ContextMenuItem>
-                            <ContextMenuSub>
+                            <!-- <ContextMenuSub>
                                 <ContextMenuSubTrigger inset>
                                     Width
                                 </ContextMenuSubTrigger>
@@ -53,10 +55,13 @@ const { pholi, onDrop, onDragStaged, widthConfig, heightConfig, getSrc, removeIt
                                     <Slider :default-value="[2]" :max="9" :min="1" :step="1" v-model="height"
                                         @update:modelValue="newValue => changeHeight(newValue, cell.id)" />
                                 </ContextMenuSubContent>
-                            </ContextMenuSub>
+                            </ContextMenuSub> -->
                         </ContextMenuContent>
                     </ContextMenu>
                 </div>
+                <div v-if="cell && 'id' in cell && cell.id.startsWith('size-')" draggable="true"
+                    @dragstart="onDragSize(cell as SizeCell)"
+                    class='absolute bottom-0 right-0 w-1/2 h-1/2 flex items-center bg-yellow-500/50 justify-center text-xs cursor-move text-white overflow-hidden'></div>
             </div>
         </template>
     </div>

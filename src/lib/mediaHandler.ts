@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 import { sessionHandler } from './sessionHandler'
 
 export type SizeType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16
-type GridCell = GridItem | BlockCell | null
+export type GridCell = GridItem | BlockCell | SizeCell | null
 type GridMatrix = GridCell[][]
 
 export interface GridItem {
@@ -36,6 +36,11 @@ interface BlockCell {
     ownerId: string
 }
 
+export interface SizeCell {
+    id: string
+    ownerId: string
+}
+
 const { session } = sessionHandler()
 
 const title = ref('')
@@ -51,13 +56,15 @@ const pholi: Ref<({
     width: SizeType
     height: SizeType
     primary: boolean
-} | BlockCell | null)[][], GridMatrix | ({
+    description: string
+} | BlockCell | SizeCell | null)[][], GridMatrix | ({
     id: string
     label: string
     width: SizeType
     height: SizeType
     primary: boolean
-} | BlockCell | null)[][]> = ref([])
+    description: string
+} | BlockCell | SizeCell | null)[][]> = ref([])
 
 const COLS = 16
 const ROWS = 9
@@ -145,7 +152,6 @@ const preview = async (evt: Event) => {
     }
 }
 
-const draggedItem = ref<GridItem | null>(null)
 
 const unplacedItems = computed(() =>
     media_list.value.filter(
@@ -226,8 +232,12 @@ async function downloadMedia() {
     }
 }
 
+const draggedItem = ref<GridItem | null>(null)
+const sizing = ref(false)
+
 function onDragStaged(item: GridItem) {
     draggedItem.value = item
+    sizing.value = false
 }
 
 function onDragUnstaged(item: MediaItem) {
@@ -239,6 +249,13 @@ function onDragUnstaged(item: MediaItem) {
         primary: true,
         description: item.description
     }
+    sizing.value = false
+}
+
+function onDragSize(item: SizeCell) {
+    const [row, col] = getIndex(item.ownerId)
+    draggedItem.value = (pholi.value[row!]![col!] as GridItem) ?? null
+    sizing.value = true
 }
 
 function onDragFiller() {
@@ -250,14 +267,45 @@ function onDragFiller() {
         primary: true,
         description: ''
     }
+    sizing.value = false
 }
 
 function getSrc(id: string) {
     return media_list.value.find(item => item.id === id)?.src
 }
 
+function resize(r: number, c: number, id: string) {
+    const [row, col] = getIndex(id)
+    const target = (pholi.value[row!]![col!] as GridItem)
+    const width_new = c - (col as number) + 1
+    const height_new = r - (row as number) + 1
+    if (width_new * height_new < 2) return
+    updateWidth(id, width_new)
+    updateHeight(id, height_new)
+    const [sizer_row, sizer_col] = getIndex(`size-${target.id}`)
+    pholi.value[sizer_row!]![sizer_col!] = null
+    pholi.value[sizer_row as number]![sizer_col as number] = null
+    for (let rw = 0; rw < height_new; rw++) {
+        const gridRow = pholi.value[(row as number) + rw]
+        if (!gridRow) continue
+        for (let cl = 0; cl < width_new; cl++) {
+            gridRow[(col as number) + cl] = { id: 'block', ownerId: target.id }
+        }
+    }
+    pholi.value[(row as number) + target.height - 1]![(col as number) + target.width - 1] = { id: `size-${target.id}`, ownerId: target.id }
+    pholi.value[row!]![col!] = target
+    sizing.value = false
+    draggedItem.value = null
+}
+
 function onDrop(row: number, col: number) {
     if (!draggedItem.value) return
+
+    if (sizing.value) {
+        resize(row, col, draggedItem.value.id)
+        return
+    }
+
     const item = {
         id: draggedItem.value.id,
         label: draggedItem.value.label,
@@ -292,6 +340,7 @@ function onDrop(row: number, col: number) {
         }
     }
 
+    pholi.value[row + item.height - 1]![col + item.width - 1] = { id: `size-${item.id}`, ownerId: item.id }
     pholi.value[row]![col] = item
     draggedItem.value = null
 }
@@ -342,6 +391,7 @@ const changeHeight = (newValue: number[] | undefined, id: string) => {
         updateHeight(id, newValue[0])
 }
 
+
 export function mediaHandler() {
     return {
         src,
@@ -362,6 +412,7 @@ export function mediaHandler() {
         onDragStaged,
         onDragUnstaged,
         onDragFiller,
+        onDragSize,
         onDrop,
         removeItem,
         changeHeight,
