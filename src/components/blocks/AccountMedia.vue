@@ -4,7 +4,7 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    DialogTrigger,
+    DialogTrigger
 } from '@/components/ui/dialog'
 import {
     Card,
@@ -33,7 +33,7 @@ const { pholi, widthConfig, heightConfig, getSrc } = mediaHandler()
                                 <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
                                     class="object-cover w-full h-full border-4 border-sky-700 bg-sky-700 rounded-3xl" />
                             </DialogTrigger>
-                            <DialogContent class="w-auto h-auto" :aria-describedby="undefined">
+                            <DialogContent class="w-auto h-auto p-8 shadow-none" :aria-describedby="undefined">
                                 <VisuallyHidden asChild>
                                     <DialogTitle :value="(cell as GridItem).label" />
                                 </VisuallyHidden>

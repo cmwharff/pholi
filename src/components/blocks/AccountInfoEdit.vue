@@ -2,6 +2,7 @@
 import Avatar from './AvatarEdit.vue'
 import { infoHandler } from '@/lib/infoHandler'
 import { sessionHandler } from '@/lib/sessionHandler'
+import Button from '../ui/button/Button.vue'
 
 const { avatar_url, username, bio, full_name, website_title, website_url, updateProfile } = infoHandler()
 const { session } = sessionHandler()
@@ -39,8 +40,9 @@ const { session } = sessionHandler()
                 </div>
 
                 <div class="flex flex-row justify-center">
-                    <input type="submit" class="mt-4 button rounded-md bg-sky-950 text-white block max-w-fit"
-                        value="Save" />
+                    <Button type="submit">
+                        Save
+                    </Button>
                 </div>
             </form>
         </div>

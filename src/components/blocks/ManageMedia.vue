@@ -8,6 +8,7 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs'
 import { mediaHandler } from '@/lib/mediaHandler'
+import Button from '../ui/button/Button.vue';
 
 const { src, title, description, unplacedItems, stagedItems, preview, uploadMedia, onDragUnstaged, onDragFiller, updatePholi } = mediaHandler()
 
@@ -15,7 +16,7 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
 
 <template>
     <div class="flex flex-col gap-4">
-        <Tabs class=" flex-col flex w-full gap-4 items-center" default-value="all">
+        <Tabs class="flex-col flex w-full gap-4 items-center" default-value="all">
             <TabsList>
                 <TabsTrigger value="upload">
                     Add
@@ -80,8 +81,9 @@ const { src, title, description, unplacedItems, stagedItems, preview, uploadMedi
         </Tabs>
         <form @submit.prevent="updatePholi">
             <div class="flex flex-row justify-center">
-                <input type="submit" class="button rounded-md bg-sky-950 text-white block max-w-fit p-4"
-                    value="Save Pholi" />
+                <Button type="submit">
+                    Save Pholi
+                </Button>
             </div>
         </form>
     </div>

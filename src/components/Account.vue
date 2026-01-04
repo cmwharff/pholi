@@ -18,6 +18,7 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs'
 import EditPholi from './blocks/EditPholi.vue'
+import Button from './ui/button/Button.vue'
 
 const { loadMedia } = mediaHandler()
 const { getProfile } = infoHandler()
@@ -85,15 +86,13 @@ async function signOut() {
                         <div v-else>
                             <AccountInfoDisplay />
                         </div>
-                        <div class="flex flex-row gap-4 w-fit p-4 rounded-3xl bg-sky-700">
-                            <button class="pt-2.5 pb-2.5 pl-4.5 pr-4.5 rounded-md bg-sky-950 text-white block max-w-fit"
-                                @click.prevent="toggleEdit">
+                        <div class="flex flex-row gap-4 ">
+                            <Button @click.prevent="toggleEdit">
                                 Edit info
-                            </button>
-                            <button class="pt-2.5 pb-2.5 pl-4.5 pr-4.5 rounded-md bg-sky-950 text-white block max-w-fit"
-                                @click.prevent="signOut">
+                            </Button>
+                            <Button @click.prevent="signOut">
                                 Sign Out
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
