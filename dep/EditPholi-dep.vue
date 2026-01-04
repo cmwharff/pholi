@@ -3,11 +3,17 @@ import {
     ContextMenu,
     ContextMenuTrigger,
     ContextMenuContent,
-    ContextMenuItem
-} from '@/components/ui/context-menu'
-import { mediaHandler, type SizeType, type GridItem, type SizeCell } from '@/lib/mediaHandler'
+    ContextMenuItem,
+    // ContextMenuSub,
+    // ContextMenuSubContent,
+    // ContextMenuSubTrigger
+} from '../src/components/ui/context-menu'
+// import Slider from '../ui/slider/Slider.vue'
+import { mediaHandler, type SizeType, type GridItem, type SizeCell } from '../src/lib/mediaHandler'
 
-const { pholi, onDrop, onDragStaged, onDragSize, widthConfig, heightConfig, getSrc, removeItem } = mediaHandler()
+const { pholi, onDrop, onDragStaged, onDragSize, widthConfig, heightConfig, getSrc, removeItem, 
+    // changeWidth, width, changeHeight, height 
+} = mediaHandler()
 
 </script>
 
@@ -32,6 +38,24 @@ const { pholi, onDrop, onDragStaged, onDragSize, widthConfig, heightConfig, getS
                             <ContextMenuItem @click="removeItem(cell.id)" inset>
                                 Remove
                             </ContextMenuItem>
+                            <!-- <ContextMenuSub>
+                                <ContextMenuSubTrigger inset>
+                                    Width
+                                </ContextMenuSubTrigger>
+                                <ContextMenuSubContent class="p-3">
+                                    <Slider :default-value="[2]" :max="16" :min="1" :step="1" v-model="width"
+                                        @update:modelValue="newValue => changeWidth(newValue, cell.id)" />
+                                </ContextMenuSubContent>
+                            </ContextMenuSub>
+                            <ContextMenuSub>
+                                <ContextMenuSubTrigger inset>
+                                    Height
+                                </ContextMenuSubTrigger>
+                                <ContextMenuSubContent class="p-3">
+                                    <Slider :default-value="[2]" :max="9" :min="1" :step="1" v-model="height"
+                                        @update:modelValue="newValue => changeHeight(newValue, cell.id)" />
+                                </ContextMenuSubContent>
+                            </ContextMenuSub> -->
                         </ContextMenuContent>
                     </ContextMenu>
                 </div>
