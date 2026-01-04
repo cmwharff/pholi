@@ -5,6 +5,7 @@ import account from './components/Account.vue'
 import forgotPass from './components/forms/forgot-password.vue'
 import signUp from './components/forms/sign-up.vue'
 import updatePass from './components/forms/update-password.vue'
+import profile from './components/Profile.vue'
 import { supabase } from '@/lib/supabaseClient'
 
 const routes = [
@@ -33,6 +34,12 @@ const routes = [
     component: account,
     meta: { requiresAuth: true },
     name: 'account'
+  },
+  {
+    path: '/account',
+    component: profile,
+    meta: { requiresAuth: false },
+    name: 'profile'
   },
   {
     path: '/',
