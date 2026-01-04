@@ -6,6 +6,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+    Card,
+    CardContent,
+    CardHeader
+} from '@/components/ui/card'
 import { VisuallyHidden } from 'reka-ui'
 
 const { pholi, widthConfig, heightConfig, getSrc } = mediaHandler()
@@ -28,14 +33,24 @@ const { pholi, widthConfig, heightConfig, getSrc } = mediaHandler()
                                 <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
                                     class="object-cover w-full h-full border-4 border-sky-700 bg-sky-700 rounded-3xl" />
                             </DialogTrigger>
-                            <DialogContent class="w-auto h-auto"
-                                :aria-describedby="undefined">
+                            <DialogContent class="w-auto h-auto" :aria-describedby="undefined">
                                 <VisuallyHidden asChild>
                                     <DialogTitle :value="(cell as GridItem).label" />
                                 </VisuallyHidden>
-                                <div class="object-contain w-max h-[80vh] overflow-hidden flex justify-center">
+                                <div class="object-contain w-max h-[75vh] overflow-hidden flex justify-center">
+                                    <Card
+                                        class="mx-4 bg-sky-950 border-sky-700 border-4 rounded-3xl h-fit w-[15vw] text-white">
+                                        <CardHeader>
+                                            <h1 class="m-0">{{ (cell as GridItem).label }}</h1>
+                                        </CardHeader>
+                                        <div v-if="(cell as GridItem).description">
+                                            <CardContent>
+                                                <h3>{{ (cell as GridItem).description }}</h3>
+                                            </CardContent>
+                                        </div>
+                                    </Card>
                                     <img :src="getSrc((cell as GridItem).id)" :alt="(cell as GridItem).label"
-                                        class="w-fit h-full border-sky-700 bg-sky-700 rounded-3xl border-4" />
+                                        class="w-fit h-full border-sky-700 bg-sky-950 rounded-3xl border-4" />
                                 </div>
                             </DialogContent>
                         </Dialog>
